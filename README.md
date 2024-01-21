@@ -1,4 +1,4 @@
-# Arduino Data collector and aggregator by Owen and Coen
+# Arduino Data collector and aggregator by Owen and Coen and Aly
 
 ## Overview
 A system built for the Arduino R4 Wifi to work with the White Box T3 to interface with Atlas Scientific Sensors and send the data to a remote server over wifi.
