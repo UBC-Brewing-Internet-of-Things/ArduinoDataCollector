@@ -4,16 +4,16 @@ ArduinoLEDMatrix matrix;
 
 void updateDisplay(int displayCode){
     switch(displaycode){
-    case 0: errorDisplay();
+    case -1: errorDisplay();
     default: displaySensors(int displayCode);
     }
 }
 
 
 /** When called updates the LED display with the current status of the devices connectivity.
-/*
-/* Parameters: none
-/* modified: Display screen, dispaying a smilely face or a sad face with debug lines as follows:
+*
+* @arameters: none
+* @modifies: Display screen, dispaying a smilely face or a sad face with debug lines as follows:
 */
 void errorDisplay(){
 
@@ -63,6 +63,30 @@ int y = analogRead(VRY);
 
 }
 
-void displaySensors(int )
+/** Displays interpreted sensor data based on the type signiture of the data 
+ * 
+ *  @paramaters: the pin number of the digital sensor to be read as input data
+ *  @modifies: Display screen, presenting the data from the selected digital sensor
+ * 
+*/
+void displaySensors(int sensorID){
+
+
+}
+
+// double must not be null 
+void displayDisolvedOx(double ppm){
+
+}
+
+// double must not be null
+void displaypH(double pH){
+
+}
+
+//double must not be null
+void displayTempature(double temperature){
+
+}
 
 

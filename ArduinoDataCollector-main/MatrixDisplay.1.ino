@@ -1,7 +1,13 @@
 #include "Arduino_LED_Matrix.h"
 
 ArduinoLEDMatrix matrix;
-//Face functions
+
+/**
+Face functions
+Parameters: none
+Purpose: When each function is called it displays the corresponding face feature/face. i.e left eye displays left eye, 
+sadFace displays a sad face.
+*/
 
 void leftEye(){
   //Left eye
@@ -56,12 +62,16 @@ void happyFace(){
 }
 
 
-//Error Functions
-void errorOne(){
-  
-}
+/**
+Error Functions
+Parameters: none
+Purpose: When called displays corresponding error
+*/
+void errorOne()
 void errorTwo()
 void errorThree()
+
+
 void displayError(){
     int y = analogRead(VRY);
     int x = analogRead(VRX);
@@ -113,47 +123,6 @@ uint8_t frame[8][12] = {
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }};
 }
-
-/*
-void loop()
-{
-
-if (sensor == 1)
-  { 
-  leftEye();
-  rightEye();
-  Hmouth();
-
-  matrix.renderBitmap(frame, 8, 12);
-
-  delay(1000);
-
-  //wink();
-
-  matrix.renderBitmap(frame, 8, 12);
-  delay(1000);
-  }
-
-else
-  {
-  leftEye();
-  rightEye();
-  Smouth();
-
-  matrix.renderBitmap(frame, 8, 12);
-
-  delay(1000);
-
-  //wink();
-
-  matrix.renderBitmap(frame, 8, 12);
-  delay(1000);
-  }
-
-}
-
-}
-*/
 
 void loop() 
 {
