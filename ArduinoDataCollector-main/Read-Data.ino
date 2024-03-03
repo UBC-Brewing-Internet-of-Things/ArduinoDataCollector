@@ -16,7 +16,7 @@ DataPacket readData(){
     int integerSent;
     char valueSent;
     String typeSent;
-    if(serial.avalible() >= 3){
+    if(serial.avalible() >= 8){
         if((serial.peek() != NULL) && (valueSent == NULL)){
             valueSent = Serial.read();
         }
