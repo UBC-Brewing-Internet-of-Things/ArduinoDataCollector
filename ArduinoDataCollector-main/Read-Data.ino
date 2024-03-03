@@ -12,7 +12,7 @@ struct DataPacket {
 };
 
 // reads from serial buffer a char, integer and a string in that order. String is terminated with newline character.
-DataPacket readData(){
+DataPacket* readData(){
     int integerSent;
     char valueSent;
     String typeSent;
@@ -23,16 +23,21 @@ DataPacket readData(){
         if((serial.peek() != NULL) && (integerSent == NULL)){
             integerSent = Serial.read(); // reads and removes 2 bytes
         }
-        typeSent = Serial.read(); // initialized string to the first character of the typesent data
-        while(serial.peek() != '\0'){
-            typeSent += Serial.read(); //reads until the string terminates
+        if((serial.peek() != NULL) && (typeSent.length() == 0)){
+            typeSent = Serial.read(); // initialized string to the first character of the typesent data
+            while(serial.peek() != '\0'){
+                typeSent += Serial.read(); //reads until the string terminates
+            }
         }
 
-        struct DataPacket returnData;
-        returnData.time = integerSent;
-        returnData.value = valueSent;
-        returnData.type = typeSent;
-        return returnData;
+        if((valueSent == NULL) || (integerSent == NULL) || (typeSent.length >= 1)){
+            DataPacket* result = malloc(sizeof(DataPacket));
+            
+            result->time = integerSent;
+            result->value = valueSent;
+            result->type = typeSent;
+            return result;
+        }
     }
     return NULL;
 }
