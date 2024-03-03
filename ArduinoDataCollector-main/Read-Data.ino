@@ -28,8 +28,6 @@ DataPacket readData(){
             typeSent += Serial.read();
         }
 
-        typeSent += '\n';
-
         struct DataPacket returnData;
         returnData.time = integerSent;
         returnData.value = valueSent;
