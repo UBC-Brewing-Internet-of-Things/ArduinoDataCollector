@@ -27,10 +27,10 @@ int initializeWifiSettings(){
 
 
 
-bool sendPacket(DataPacket input){
+bool sendPacket(DataPacket* input){
     bool connected = client.connected();
-    if(connected){
-        client.write(input);
+    if(connected && (DataPacket != nullptr)){
+        client.write(input->value);
     }
     return connected;
 }
