@@ -6,7 +6,7 @@ void setup(){
 }
 
 struct DataPacket {
-  char* value;
+  char* value; //does this need to be a character array? Can this be a string or something?
   int time;
   String type;
 };
@@ -18,7 +18,7 @@ DataPacket* readData(){
     String typeSent;
     if(serial.available() >= 2){
         if((serial.peek() != NULL) && (valueSent == NULL)){
-            valueSent = Serial.read(); // reads and removes 1 byte
+            valueSent = Serial.read(); // reads and removes 1 byte, assumes one character currently, needs to be updated to handle a string
         }
         if((serial.peek() != NULL) && (integerSent == NULL)){
             integerSent = Serial.read(); // reads and removes 2 bytes
@@ -31,10 +31,10 @@ DataPacket* readData(){
         }
 
         if((valueSent == NULL) || (integerSent == NULL) || (typeSent.length >= 1)){
-            DataPacket* result = malloc(sizeof(DataPacket));
+            DataPacket* result = malloc(sizeof(DataPacket)); //must be destroyed when sent
             
             result->time = integerSent;
-            result->value = valueSent;
+            result->value = valueSent; //Uses C++ syntax, probably wrong
             result->type = typeSent;
             return result;
         }
