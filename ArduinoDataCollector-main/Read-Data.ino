@@ -16,7 +16,7 @@ DataPacket readData(){
     int integerSent;
     char valueSent;
     String typeSent;
-    if(serial.avalible() >= 8){
+    if(serial.available() >= 8){
         if((serial.peek() != NULL) && (valueSent == NULL)){
             valueSent = Serial.read();
         }
@@ -27,6 +27,8 @@ DataPacket readData(){
         while(serial.peek() != '\n'){
             typeSent += Serial.read();
         }
+
+        typeSent += '\n';
 
         struct DataPacket returnData;
         returnData.time = integerSent;
