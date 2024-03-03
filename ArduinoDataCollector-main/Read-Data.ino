@@ -6,7 +6,7 @@ void setup(){
 }
 
 struct DataPacket {
-  char value;
+  char* value;
   int time;
   String type;
 };
