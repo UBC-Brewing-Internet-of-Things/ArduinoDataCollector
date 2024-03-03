@@ -30,7 +30,7 @@ int initializeWifiSettings(){
 bool sendPacket(DataPacket* input){
     bool connected = client.connected();
     if(connected && (DataPacket != nullptr)){
-        client.write(input->value);
+        client.write(input->value); // C++ syntax, proably wrong
     }
     return connected;
 }
