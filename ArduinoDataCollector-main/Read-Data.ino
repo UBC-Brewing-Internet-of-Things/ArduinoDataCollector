@@ -5,12 +5,6 @@ void setup(){
     Serial.begin(9600);
 }
 
-struct DataPacket {
-  char* value; //does this need to be a character array? Can this be a string or something?
-  int time;
-  char* type;
-};
-
 // reads from serial buffer a char, integer and a string in that order. String is terminated with newline character.
 DataPacket* readData(){
     int integerSent;
