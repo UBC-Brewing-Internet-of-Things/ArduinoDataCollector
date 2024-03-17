@@ -11,7 +11,7 @@ struct DataPacket {
 };
 
 //loops and repeatedly attempts to read the input bufferand send the input data to a remote server.
-void readingLoop(){
+void loop(){
   DataPacket* packet;
   bool sent;
   int attempts;
@@ -56,10 +56,9 @@ void deallocateString(char* ptr){
     return;
 }
 
-void loop{
+void setup(){
   int initializeStatus = WL_IDLE_STATUS;
   while(initializeStatus != WL_CONNECTED){
     initializeStatus = initializeWifiSettings();
   }
-  readingLoop();
 }
