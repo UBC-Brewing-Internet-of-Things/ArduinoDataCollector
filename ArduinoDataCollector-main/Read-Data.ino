@@ -1,7 +1,7 @@
 #include "Main.ino"
 #include <SoftwareSerial.h>
 
-void setup(){
+void initializeWifiSettings(){
     Serial.begin(9600);
 }
 
