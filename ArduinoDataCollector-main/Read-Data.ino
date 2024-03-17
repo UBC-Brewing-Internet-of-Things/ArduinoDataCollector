@@ -8,26 +8,42 @@ void setup(){
 struct DataPacket {
   char* value; //does this need to be a character array? Can this be a string or something?
   int time;
-  String type;
+  char* type;
 };
 
 // reads from serial buffer a char, integer and a string in that order. String is terminated with newline character.
 DataPacket* readData(){
     int integerSent;
-    char valueSent;
-    String typeSent;
+    char* valueSent;
+    char* typeSent;
     if(serial.available() >= 2){
-        if((serial.peek() != NULL) && (valueSent == NULL)){
-            valueSent = Serial.read(); // reads and removes 1 byte, assumes one character currently, needs to be updated to handle a string
-        }
-        if((serial.peek() != NULL) && (integerSent == NULL)){
-            integerSent = Serial.read(); // reads and removes 2 bytes
-        }
-        if((serial.peek() != NULL) && (typeSent.length() == 0)){
-            typeSent = Serial.read(); // initialized string to the first character of the typesent data
+        if((serial.peek() != -1) && (valueSent == NULL)){
+            
+            char c;
+            valueSent = malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
+            int i = 0;
             while(serial.peek() != '\0'){
-                typeSent += Serial.read(); //reads until the string terminates
+                *(valueSent + i) = serial.read();
+                i++;
             }
+            *(valueSent + i) = '\0';
+            
+        }
+        
+        if((serial.peek() != -1) && (integerSent == NULL)){
+                integerSent = Serial.read(); // reads and removes 2 bytes, assumes smallest bits are sent first
+                integerSent += 512 * Serial.read();
+        }
+        
+        if((serial.peek() != NULL) && (typeSent.length() == 0)){
+            char c;
+            typeSent = malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
+            int i = 0;
+            while(serial.peek() != '\0'){
+                *(typeSent + i) = serial.read();
+                i++;
+            }
+            *(typeSent + i) = '\0';
         }
 
         if((valueSent == NULL) || (integerSent == NULL) || (typeSent.length >= 1)){
