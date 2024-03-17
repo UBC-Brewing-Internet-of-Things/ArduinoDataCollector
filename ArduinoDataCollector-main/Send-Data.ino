@@ -14,7 +14,7 @@ int initializeWifiSettings(){
     Serial.begin(9600);
     Serial.println(ssid);
 
-    while((status = WL_IDLE_STATUS) && (attempts < 10)){
+    while((status == WL_IDLE_STATUS) && (attempts < 10)){
         attempts++;
         status = WiFi.begin(ssid, pass);
     }
