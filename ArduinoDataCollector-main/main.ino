@@ -20,6 +20,7 @@ int initializeWifiSettings(){
     int attempts = 0;
     Serial.begin(9600);
     Serial.println(ssid);
+    Serial.println(pass);
 
     while((status != WL_CONNECTED) && (attempts < 10)){
         attempts++;
@@ -58,8 +59,11 @@ void deallocateString(char* ptr){
 bool sendPacket(struct DataPacket* input){
     bool connected = client.connected();
     if(connected && (input != nullptr)){ 
+        Serial.println((String) (input->value));
         client.println((String) (input->value)); 
+        Serial.println(input->time, 2);
         client.println(input->time, 2);
+        Serial.println((String) (input->type));
         client.println((String) (input->type));
     }
     return connected;
@@ -74,7 +78,7 @@ struct DataPacket* readData(){
         if((Serial.peek() != -1) && (valueSent == NULL)){
             
             char c;
-            valueSent = malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
+            valueSent = (char*)malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
             int i = 0;
             while(Serial.peek() != '\0'){
                 *(valueSent + i) = Serial.read();
@@ -84,14 +88,14 @@ struct DataPacket* readData(){
             
         }
         
-        if((Serial.peek() != -1) && (integerSent == NULL)){
+        if((Serial.peek() != -1) && (integerSent == 0)){
                 integerSent = Serial.read(); // reads and removes 2 bytes, assumes smallest bits are sent first
                 integerSent += 512 * Serial.read();
         }
         
-        if((Serial.peek() != NULL) && (((String)typeSent).length() == 0)){
+        if((Serial.peek() != -1) && (((String)typeSent).length() == 0)){
             char c;
-            typeSent = malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
+            typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
             int i = 0;
             while(Serial.peek() != '\0'){
                 *(typeSent + i) = Serial.read();
@@ -100,11 +104,11 @@ struct DataPacket* readData(){
             *(typeSent + i) = '\0';
         }
 
-        if((valueSent == NULL) || (integerSent == NULL) || (((String)typeSent).length() >= 1)){
-            struct DataPacket* result = malloc(sizeof(struct DataPacket)); //must be destroyed when sent
+        if((valueSent != NULL) || (integerSent != 0) || (((String)typeSent).length() >= 1)){
+            struct DataPacket* result = (struct DataPacket*)malloc(sizeof(struct DataPacket)); //must be destroyed when sent
             
             result->time = integerSent;
-            result->value = valueSent; //Uses C++ syntax, probably wrong
+            result->value = valueSent; 
             result->type = typeSent;
             return result;
         }
