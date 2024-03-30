@@ -5,7 +5,7 @@ char ssid[] = "myNetwork";          //  your network SSID (name)
 char pass[] = "myPassword";   // your network password
 
 int status = WL_IDLE_STATUS;
-IPAddress server(74,125,115,105);  // Google
+IPAddress server(74,125,115,105);  // Ip address for the server
 
 struct DataPacket {
   char* value; // must be '\0' terminated
@@ -15,6 +15,9 @@ struct DataPacket {
 
 WiFiClient client;
 
+
+//Initialized the serial bus, Wifi client to the database server. Attempts to connect 10 times and returns the status of the connection.
+//returns WL_CONNECTED if the connectiohn was sucsessful and WL_IDLE_STATUS if the connectin fails.
 int initializeWifiSettings(){
 
     int attempts = 0;
@@ -27,8 +30,13 @@ int initializeWifiSettings(){
         status = WiFi.begin(ssid, pass);
     }
 
+    attempts = 0;
     if (status == WL_CONNECTED) {
-        client.connect(server, 80);
+      status = WL_IDLE_STATUS;
+      while((status != WL_CONNECTED) && (attempts < 10))
+        if(client.connect(server, 80)){
+            status = WL_CONNECTED;
+        }
     }
     return status;
 }   
