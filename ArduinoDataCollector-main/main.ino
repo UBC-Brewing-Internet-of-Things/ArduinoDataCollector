@@ -39,30 +39,17 @@ void setup(){
     }
 }
 
-/**
-* deallocateString takes as input a pointer to a NULL terminated string in the heap and will deallocate it returning nothing.
-* @params: ptr: a '\0' terminated string in the heap that is to be deallocated
-* @effects: free's memory used by the input string
-*/
-void deallocateString(char* ptr){
-    while(*ptr != '\0'){
-      free(ptr);
-      ptr++;
-    }
-    free(ptr);
-    return;
-}
 
 // sends a non null packet to the server set.
 bool sendPacket(struct DataPacket* input){
     bool connected = client.connected();
     if(connected && (input != nullptr)){ 
-        Serial.println((String) (input->value));
-        client.println((String) (input->value)); 
+        Serial.println((*input->value));
+        client.println((*input->value)); 
         Serial.println(input->time, 2);
         client.println(input->time, 2);
-        Serial.println((String) (input->type));
-        client.println((String) (input->type));
+        Serial.println((*input->type));
+        client.println((*input->type));
     }
     return connected;
 }
@@ -95,7 +82,7 @@ struct DataPacket* readData(){
         
         char typeTemp[50];
         //typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
-        int i = 0;
+        i = 0;
         while(Serial.peek() != '\0'){
           typeTemp[i] = Serial.read();
           i++;
@@ -107,7 +94,7 @@ struct DataPacket* readData(){
             struct DataPacket* result = (struct DataPacket*)malloc(sizeof(struct DataPacket)); //must be destroyed when sent
             result->time = integerSent;
             result->value = malloc(sizeof(valueSent)); 
-            *result->value = valueSent
+            *result->value = valueSent;
             result->type = malloc(sizeof(typeSent));
             *result->type = typeSent;
             return result;
@@ -138,9 +125,9 @@ void loop(){
       }
       //clears memory used for packet
       if(packet->type != NULL)
-        deallocateString(packet->type);
+        free(packet->type);
       if(packet->value != NULL)
-        deallocateString(packet->value);
+        free(packet->value);
       
       free(packet);
       }
