@@ -67,8 +67,10 @@ struct DataPacket* readData(){
                 i++;
               }
             }
-            valueTemp[i] = Serial.read();;
-            String valueSent(valueTemp);
+            valueTemp[i] = Serial.read();
+            valueTemp[i] = '\0';
+            String valueSent = String(valueTemp);
+            Serial.println(valueSent);
         
         while(true){
           if(Serial.available() >= 2){
@@ -77,17 +79,19 @@ struct DataPacket* readData(){
             break;
           }
         }
+        Serial.println(integerSent);
         
         char typeTemp[50];
         //typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
         i = 0;
         while(Serial.peek() != '\0'){
-          typeTemp[i] = Serial.read();
-          i++;
+          if(Serial.peek() != -1){
+            typeTemp[i] = Serial.read();
+            i++;
+          }
         }
-        
         typeTemp[i] = Serial.read();
-        String typeSent (typeTemp);
+        String typeSent = String(typeTemp);
 
         if((valueSent.length() > 1) && (integerSent != 0) && ((typeSent.length() > 1))){
             struct DataPacket* result = (struct DataPacket*)malloc(sizeof(struct DataPacket)); //must be destroyed when sent
