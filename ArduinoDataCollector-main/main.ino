@@ -67,7 +67,7 @@ struct DataPacket* readData(){
                 i++;
               }
             }
-            valueTemp[i] = '\0';
+            valueTemp[i] = Serial.read();;
             String valueSent(valueTemp);
         
         while(true){
@@ -85,7 +85,8 @@ struct DataPacket* readData(){
           typeTemp[i] = Serial.read();
           i++;
         }
-        typeTemp[i] = '\0';
+        
+        typeTemp[i] = Serial.read();
         String typeSent (typeTemp);
 
         if((valueSent.length() >= 1) && (integerSent != 0) && ((typeSent.length() >= 1))){
