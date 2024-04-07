@@ -8,9 +8,9 @@ int status = WL_IDLE_STATUS;
 IPAddress server(74,125,115,105);  // Ip address for the server
 
 struct DataPacket {
-  char* value; // must be '\0' terminated
+  String* value; 
   int time;
-  char* type; // must be '\0' terminated
+  String* type; // must be '\0' terminated
 };
 
 WiFiClient client;
@@ -73,16 +73,17 @@ struct DataPacket* readData(){
     char* valueSent;
     char* typeSent;
     if(Serial.available() >= 2){      
-            char c;
-            valueSent = (char*)malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
+            char valueTemp[50];
+            //valueSent = (char*)malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
             int i = 0;
             while(Serial.peek() != '\0'){
               if(Serial.peek() != -1){
-                *(valueSent + i) = Serial.read();
+                valueTemp[i]= Serial.read();
                 i++;
               }
             }
-            *(valueSent + i) = '\0';
+            valueTemp[i] = '\0';
+            String valueSent(valueTemp);
         
         while(true){
           if(Serial.available() >= 2){
@@ -92,21 +93,23 @@ struct DataPacket* readData(){
           }
         }
         
-        char c;
-        typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
+        char typeTemp[50];
+        //typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
         int i = 0;
         while(Serial.peek() != '\0'){
-          *(typeSent + i) = Serial.read();
+          typeTemp[i] = Serial.read();
           i++;
         }
-        *(typeSent + i) = '\0';
+        typeTemp[i] = '\0';
+        String typeSent (typeTemp);
 
-        if((((string)valueSent).length() >= 1) || (integerSent != 0) || (((String)typeSent).length() >= 1)){
+        if((valueSent.length() >= 1) && (integerSent != 0) && ((typeSent.length() >= 1))){
             struct DataPacket* result = (struct DataPacket*)malloc(sizeof(struct DataPacket)); //must be destroyed when sent
-            
             result->time = integerSent;
-            result->value = valueSent; 
-            result->type = typeSent;
+            result->value = malloc(sizeof(valueSent)); 
+            *result->value = valueSent
+            result->type = malloc(sizeof(typeSent));
+            *result->type = typeSent;
             return result;
         }
     }
