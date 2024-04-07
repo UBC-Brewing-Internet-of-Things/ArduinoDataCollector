@@ -54,11 +54,9 @@ bool sendPacket(struct DataPacket* input){
     return connected;
 }
 
-// reads from serial buffer a char, integer and a string in that order. String is terminated with newline character.
+// reads from serial buffer a string, integer and a string in that order. String is terminated with newline character.
 struct DataPacket* readData(){
     int integerSent = 0;
-    char* valueSent;
-    char* typeSent;
     if(Serial.available() >= 2){      
             char valueTemp[50];
             //valueSent = (char*)malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
