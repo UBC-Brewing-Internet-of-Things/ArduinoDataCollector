@@ -89,7 +89,7 @@ struct DataPacket* readData(){
         typeTemp[i] = Serial.read();
         String typeSent (typeTemp);
 
-        if((valueSent.length() >= 1) && (integerSent != 0) && ((typeSent.length() >= 1))){
+        if((valueSent.length() > 1) && (integerSent != 0) && ((typeSent.length() > 1))){
             struct DataPacket* result = (struct DataPacket*)malloc(sizeof(struct DataPacket)); //must be destroyed when sent
             result->time = integerSent;
             result->value = malloc(sizeof(valueSent)); 
