@@ -18,8 +18,7 @@ WiFiClient client;
 
 //Initialized the serial bus, Wifi client to the database server. Attempts to connect 10 times and returns the status of the connection.
 //returns WL_CONNECTED if the connectiohn was sucsessful and WL_IDLE_STATUS if the connectin fails.
-int initializeWifiSettings(){
-
+void setup(){
     int attempts = 0;
     Serial.begin(9600);
     Serial.println(ssid);
@@ -38,15 +37,6 @@ int initializeWifiSettings(){
             status = WL_CONNECTED;
         }
     }
-    return status;
-}   
-
-void setup(){
-  int initializeStatus = WL_IDLE_STATUS;
-  while(initializeStatus != WL_CONNECTED){
-    initializeStatus = initializeWifiSettings();
-  }
-  Serial.begin(9600);
 }
 
 /**
@@ -79,40 +69,39 @@ bool sendPacket(struct DataPacket* input){
 
 // reads from serial buffer a char, integer and a string in that order. String is terminated with newline character.
 struct DataPacket* readData(){
-    int integerSent;
+    int integerSent = 0;
     char* valueSent;
     char* typeSent;
-    if(Serial.available() >= 2){
-        if((Serial.peek() != -1) && (valueSent == NULL)){
-            
+    if(Serial.available() >= 2){      
             char c;
             valueSent = (char*)malloc(sizeof(c * 50)); //assumes the name of the type of data is less then 50 characters
             int i = 0;
             while(Serial.peek() != '\0'){
+              if(Serial.peek() != -1){
                 *(valueSent + i) = Serial.read();
                 i++;
+              }
             }
             *(valueSent + i) = '\0';
-            
+        
+        while(true){
+          if(Serial.available() >= 2){
+            integerSent = Serial.read(); // reads and removes 2 bytes, assumes smallest bits are sent first
+            integerSent += 512 * Serial.read();
+            break;
+          }
         }
         
-        if((Serial.peek() != -1) && (integerSent == 0)){
-                integerSent = Serial.read(); // reads and removes 2 bytes, assumes smallest bits are sent first
-                integerSent += 512 * Serial.read();
+        char c;
+        typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
+        int i = 0;
+        while(Serial.peek() != '\0'){
+          *(typeSent + i) = Serial.read();
+          i++;
         }
-        
-        if((Serial.peek() != -1) && (((String)typeSent).length() == 0)){
-            char c;
-            typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
-            int i = 0;
-            while(Serial.peek() != '\0'){
-                *(typeSent + i) = Serial.read();
-                i++;
-            }
-            *(typeSent + i) = '\0';
-        }
+        *(typeSent + i) = '\0';
 
-        if((valueSent != NULL) || (integerSent != 0) || (((String)typeSent).length() >= 1)){
+        if((((string)valueSent).length() >= 1) || (integerSent != 0) || (((String)typeSent).length() >= 1)){
             struct DataPacket* result = (struct DataPacket*)malloc(sizeof(struct DataPacket)); //must be destroyed when sent
             
             result->time = integerSent;
