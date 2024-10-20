@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include <SoftwareSerial.h>
-#include "dataPacket.cpp"
+#include "supportMethods.cpp"
 
 void setup(){
     int initializeStatus = WL_IDLE_STATUS;

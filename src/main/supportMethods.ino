@@ -1,6 +1,5 @@
 #include <WiFi.h>
 #include <SoftwareSerial.h>
-#include "dataPacket.cpp"
 
 char ssid[] = "myNetwork";          //  your network SSID (name)
 char pass[] = "myPassword";   // your network password
