@@ -19,6 +19,7 @@ WiFiClient client;
 //Initialized the serial bus, Wifi client to the database server. Attempts to connect 10 times and returns the status of the connection.
 //returns WL_CONNECTED if the connectiohn was sucsessful and WL_IDLE_STATUS if the connectin fails.
 int initializeWifiSettings(){
+    Serial.println("Initializing wifi settings");
 
     int attempts = 0;
     Serial.begin(9600);
@@ -26,6 +27,7 @@ int initializeWifiSettings(){
     Serial.println(pass);
 
     while((status != WL_CONNECTED) && (attempts < 10)){
+        Serial.println("Attempting to connect to server");
         attempts++;
         status = WiFi.begin(ssid, pass);
     }
@@ -34,9 +36,14 @@ int initializeWifiSettings(){
     if (status == WL_CONNECTED) {
         status = WL_IDLE_STATUS;
         while((status != WL_CONNECTED) && (attempts < 10))
+            Serial.println("Attempting to connect client to server");
+
             if(client.connect(server, 80)){
+                Serial.println("Connected client to server");
                 status = WL_CONNECTED;
             }
+    } else {
+        Serial.println("ERROR server not connected");
     }
     return status;
 }
@@ -44,13 +51,17 @@ int initializeWifiSettings(){
 // sends a non null packet to the server set.
 bool sendPacket(struct DataPacket* input){
     bool connected = client.connected();
-    if(connected && (input != nullptr)){
+    if((input != nullptr)){
         Serial.println((String) (input->value));
-        //client.println((String) (input->value));
         Serial.println(input->time, 2);
-        //client.println(input->time, 2);
         Serial.println((String) (input->type));
-        //client.println((String) (input->type));
+        if(connected){
+            client.println((String) (input->value));
+            client.println(input->time, 2);
+            client.println((String) (input->type));
+        }
+    } else {
+        Serial.println("DataPacket is NULL");
     }
     return connected;
 }
@@ -61,6 +72,7 @@ struct DataPacket* readData(){
     char* valueSent;
     char* typeSent;
     if(Serial.available() >= 2){
+        Serial.println("Data found in serial buffer for valueSent");
         if((Serial.peek() != -1) && (valueSent == NULL)){
 
             char c;
@@ -71,15 +83,22 @@ struct DataPacket* readData(){
                 i++;
             }
             *(valueSent + i) = '\0';
-
+            while(i < 50){
+                free(typeSent + i);
+                i++;
+            }
+            Serial.println((String) *valueSent);
         }
 
         if((Serial.peek() != -1) && (integerSent == 0)){
+                Serial.println("Data found in serial buffer for integer sent");
                 integerSent = Serial.read(); // reads and removes 2 bytes, assumes smallest bits are sent first
                 integerSent += 512 * Serial.read();
+                Serial.println(integerSent);
         }
 
         if((Serial.peek() != -1) && (((String)typeSent).length() == 0)){
+            Serial.println("Data found in serial buffer for type sent")
             char c;
             typeSent = (char*)malloc(sizeof(c * 50)); //assumes the contents of data is less then 50 characters
             int i = 0;
@@ -88,6 +107,11 @@ struct DataPacket* readData(){
                 i++;
             }
             *(typeSent + i) = '\0';
+            while(i < 50){
+                free(typeSent + i);
+                i++;
+            }
+            Serial.println((String) *typeSent);
         }
 
         if((valueSent != NULL) || (integerSent != 0) || (((String)typeSent).length() >= 1)){
